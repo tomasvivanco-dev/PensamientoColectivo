@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: TU_USUARIO/pensamientocolectivo   # <- cambia por tu usuario/organización de GitHub
+  repo: tomasvivanco-dev/PensamientoColectivo
   branch: main
   base_url: https://api.netlify.com
   auth_endpoint: auth
