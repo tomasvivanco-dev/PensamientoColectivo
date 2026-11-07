@@ -1,0 +1,23 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+
+const autores = (await getCollection('autores')).sort((a, b) =>
+  a.data.nombre.localeCompare(b.data.nombre, 'es'),
+);
+---
+
+<Base title="Autores" description="Quienes escriben en Pensamiento Colectivo.">
+  <div class="wrap">
+    <p class="kicker">Equipo</p>
+    <h1>Autores</h1>
+    <div class="grid">
+      {autores.map((a) => (
+        <article class="card">
+          <h3><a href={`/autores/${a.id}`}>{a.data.nombre}</a></h3>
+          {a.data.cargo && <p>{a.data.cargo}</p>}
+        </article>
+      ))}
+    </div>
+  </div>
+</Base>

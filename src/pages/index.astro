@@ -1,0 +1,60 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('es-CL', { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+
+const columnas = (await getCollection('columnas', (c) => !c.data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 5);
+
+const documentos = (await getCollection('documentos', (d) => !d.data.draft))
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+  .slice(0, 6);
+
+const autorDe = async (id: string) => (await getEntry('autores', id))?.data.nombre ?? '';
+const columnasConAutor = await Promise.all(
+  columnas.map(async (c) => ({ ...c, autor: await autorDe(c.data.author.id) })),
+);
+---
+
+<Base>
+  <div class="wrap">
+    <p class="kicker">Opinión y archivo</p>
+    <h1>Pensamiento Colectivo</h1>
+    <p class="lead">Columnas de opinión y documentos para el debate público, en un solo lugar.</p>
+
+    <div class="section-head">
+      <h2>Últimas columnas</h2>
+      <a href="/columnas">Ver todas →</a>
+    </div>
+    <ul class="list">
+      {columnasConAutor.map((c) => (
+        <li>
+          <span class="meta">{fmt(c.data.date)} · {c.autor}</span>
+          <h3><a href={`/columnas/${c.id}`}>{c.data.title}</a></h3>
+          <p>{c.data.summary}</p>
+        </li>
+      ))}
+      {columnasConAutor.length === 0 && <li><p>Aún no hay columnas publicadas.</p></li>}
+    </ul>
+
+    <div class="section-head">
+      <h2>Documentos recientes</h2>
+      <a href="/documentos">Ver biblioteca →</a>
+    </div>
+    <div class="grid">
+      {documentos.map((d) => (
+        <article class="card">
+          <span class="kicker">{d.data.category}</span>
+          <h3>{d.data.title}</h3>
+          <p>{d.data.description}</p>
+          <span class="meta">{fmt(d.data.date)}</span>
+          <a class="btn" href={d.data.file} target="_blank" rel="noopener">Descargar</a>
+        </article>
+      ))}
+      {documentos.length === 0 && <p>Aún no hay documentos publicados.</p>}
+    </div>
+  </div>
+</Base>

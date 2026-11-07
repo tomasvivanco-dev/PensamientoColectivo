@@ -1,0 +1,65 @@
+---
+import '../styles/global.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const SITE_NAME = 'Pensamiento Colectivo';
+const {
+  title,
+  description = 'Columnas de opinión y documentos para el debate público.',
+} = Astro.props;
+
+const fullTitle = title ? `${title} · ${SITE_NAME}` : SITE_NAME;
+const path = Astro.url.pathname;
+const canonical = new URL(path, Astro.site);
+
+const links = [
+  { href: '/columnas', label: 'Columnas' },
+  { href: '/documentos', label: 'Documentos' },
+  { href: '/autores', label: 'Autores' },
+];
+---
+
+<!doctype html>
+<html lang="es-CL">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title={SITE_NAME} href="/rss.xml" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="es_CL" />
+    <meta name="twitter:card" content="summary" />
+  </head>
+  <body>
+    <a class="skip" href="#contenido">Saltar al contenido</a>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="/">Pensamiento <span>Colectivo</span></a>
+        <nav class="nav" aria-label="Principal">
+          {links.map((l) => (
+            <a href={l.href} aria-current={path.startsWith(l.href) ? 'page' : undefined}>{l.label}</a>
+          ))}
+        </nav>
+      </div>
+    </header>
+    <main id="contenido">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="wrap">
+        <span>© {new Date().getFullYear()} Pensamiento Colectivo</span>
+        <span><a href="/rss.xml">RSS</a></span>
+      </div>
+    </footer>
+  </body>
+</html>

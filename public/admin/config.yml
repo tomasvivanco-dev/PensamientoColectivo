@@ -1,0 +1,63 @@
+backend:
+  name: github
+  repo: TU_USUARIO/pensamientocolectivo   # <- cambia por tu usuario/organización de GitHub
+  branch: main
+  base_url: https://api.netlify.com
+  auth_endpoint: auth
+
+locale: es
+site_url: https://pensamientocolectivo.cl
+display_url: https://pensamientocolectivo.cl
+
+media_folder: public/uploads
+public_folder: /uploads
+
+collections:
+  - name: columnas
+    label: Columnas
+    label_singular: Columna
+    folder: src/content/columnas
+    extension: md
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    sortable_fields: [date, title]
+    summary: "{{title}} — {{date}}"
+    fields:
+      - { name: title, label: Título, widget: string }
+      - { name: date, label: Fecha, widget: datetime, time_format: false, date_format: "YYYY-MM-DD", format: "YYYY-MM-DD" }
+      - { name: author, label: Autor, widget: relation, collection: autores, search_fields: [nombre], value_field: "{{slug}}", display_fields: [nombre] }
+      - { name: summary, label: Resumen (aparece en listados), widget: text }
+      - { name: tags, label: Etiquetas, widget: list, required: false }
+      - { name: draft, label: Borrador (no se publica), widget: boolean, default: false }
+      - { name: body, label: Texto, widget: markdown }
+
+  - name: documentos
+    label: Documentos
+    label_singular: Documento
+    folder: src/content/documentos
+    extension: md
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    sortable_fields: [date, title]
+    summary: "{{title}} — {{category}}"
+    fields:
+      - { name: title, label: Título, widget: string }
+      - { name: date, label: Fecha, widget: datetime, time_format: false, date_format: "YYYY-MM-DD", format: "YYYY-MM-DD" }
+      - { name: category, label: Categoría, widget: string, default: General }
+      - { name: description, label: Descripción, widget: text }
+      - { name: file, label: Archivo (PDF u otro), widget: file }
+      - { name: author, label: Autor (opcional), widget: relation, collection: autores, search_fields: [nombre], value_field: "{{slug}}", display_fields: [nombre], required: false }
+      - { name: draft, label: Borrador (no se publica), widget: boolean, default: false }
+
+  - name: autores
+    label: Autores
+    label_singular: Autor
+    folder: src/content/autores
+    extension: md
+    create: true
+    identifier_field: nombre
+    slug: "{{slug}}"
+    fields:
+      - { name: nombre, label: Nombre, widget: string }
+      - { name: cargo, label: Cargo o descripción corta, widget: string, required: false }
+      - { name: body, label: Biografía, widget: markdown, required: false }
