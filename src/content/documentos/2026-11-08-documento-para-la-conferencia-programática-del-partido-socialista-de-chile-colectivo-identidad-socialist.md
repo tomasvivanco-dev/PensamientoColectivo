@@ -10,6 +10,6 @@ description: >-
   Socialista de Chile, busca contribuir al debate y reflexión en la Conferencia Nacional de Programa
 
   “Eugenio González Rojas".
-file: /uploads/documento-conferencia-programática-cis-2026-versión-final.pdf
+file: /uploads/documento-conferencia-programatica-cis-2026-version-final.pdf
 draft: false
 ---
